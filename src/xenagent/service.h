@@ -29,15 +29,46 @@
  * SUCH DAMAGE.
  */
 
-// stdafx.h : include file for standard system include files,
-// or project specific include files that are used frequently, but
-// are changed infrequently
-//
+#ifndef __XENAGENT_SERVICE_H__
+#define __XENAGENT_SERVICE_H__
 
-#pragma once
+#include <version.h>
 
+#define SVC_NAME "xensvc"
+#define SVC_DISPLAYNAME PRODUCT_NAME_STR ## "Interface Service"
+#define SVC_DESC "Monitors and provides various metrics to XenStore"
 
-#include <iostream>
-#include <tchar.h>
+class CXenAgent
+{
+public: // statics
+    static void Log(const char* fmt, ...);
 
-// TODO: reference additional headers your program requires here
+    static int ServiceInstall();
+    static int ServiceUninstall();
+    static int ServiceEntry();
+
+    static void WINAPI ServiceMain(int argc, char** argv);
+    static DWORD WINAPI ServiceControlHandlerEx(DWORD, DWORD, LPVOID, LPVOID);
+
+public: // ctor/dtor
+    CXenAgent();
+    ~CXenAgent();
+
+private: // service events
+    void OnServiceStart();
+    void OnServiceStop();
+    void OnDeviceEvent(DWORD, LPVOID);
+    bool ServiceMainLoop();
+
+private: // service support
+    void SetServiceStatus(DWORD state, DWORD exit = 0, DWORD hint = 0);
+    void WINAPI __ServiceMain(int argc, char** argv);
+    DWORD WINAPI __ServiceControlHandlerEx(DWORD, DWORD, LPVOID, LPVOID);
+
+    SERVICE_STATUS          m_status;
+    SERVICE_STATUS_HANDLE   m_handle;
+    HANDLE                  m_evtlog;
+    HANDLE                  m_svc_stop;
+};
+
+#endif
