@@ -70,6 +70,10 @@ def make_header():
     file.write('#define DAY_STR\t\t\t"' + str(now.day) + '"\n')
     file.write('\n')
 
+    file.write('#define REG_TOOLS_PATH\t\t\t"' + os.environ['REG_TOOLS_PATH'] + '"\n')
+    file.write('#define REG_UTC_NAME\t\t\t"' + os.environ['REG_UTC_NAME'] + '"\n')
+    file.write('\n')
+
     file.close()
 
 
@@ -425,6 +429,12 @@ if __name__ == '__main__':
 
     if 'OBJECT_PREFIX' not in os.environ.keys():
         os.environ['OBJECT_PREFIX'] = 'XenProject'
+
+    if 'REG_TOOLS_PATH' not in os.environ.keys():
+        os.environ['REG_TOOLS_PATH'] = 'XenTools'
+
+    if 'REG_UTC_NAME' not in os.environ.keys():
+        os.environ['REG_UTC_NAME'] = 'HostTime'
 
     os.environ['MAJOR_VERSION'] = '8'
     os.environ['MINOR_VERSION'] = '2'
